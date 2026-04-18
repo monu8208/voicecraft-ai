@@ -1,29 +1,20 @@
-async function generateAudio() {
-  const text = document.getElementById("text").value;
-  const voiceId = document.getElementById("voice").value;
+async function generate() {
+  let text = document.getElementById("text").value;
 
-  if (!text) {
-    alert("Text likho pehle");
-    return;
-  }
-
-  const response = await fetch("/api/tts", {
+  let response = await fetch("https://api.elevenlabs.io/v1/text-to-speech/Sxk6njaoa7XLsAFT7WcN", {
     method: "POST",
     headers: {
+      "xi-api-key": "YOUR_API_KEY",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ text, voiceId })
+    body: JSON.stringify({
+      text: text,
+      model_id: "eleven_multilingual_v2"
+    })
   });
 
-  if (!response.ok) {
-    alert("API error ❌");
-    return;
-  }
+  let audioBlob = await response.blob();
+  let url = URL.createObjectURL(audioBlob);
 
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-
-  const audio = document.getElementById("audio");
-  audio.src = url;
-  audio.play();
+  document.getElementById("audio").src = url;
 }
