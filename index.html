@@ -14,12 +14,22 @@
 
 <br><br>
 
-<audio id="audio" controls></audio>
-
-<!-- IMPORTANT: script last me hona chahiye -->
 <script>
 function generateAudio() {
-  alert("Button working ✅");
+  const text = document.getElementById("text").value;
+
+  if (!text) {
+    alert("Text likho pehle");
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.lang = "en-US";
+
+  speechSynthesis.speak(utterance);
 }
 </script>
 
