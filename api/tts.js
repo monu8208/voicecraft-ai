@@ -1,4 +1,7 @@
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).send("Method not allowed");
+  }
 
   try {
     const { text } = req.body;
@@ -18,16 +21,11 @@ export default async function handler(req, res) {
       }
     );
 
-    if (!response.ok) {
-      return res.status(500).json({ error: "API error" });
-    }
-
     const audio = await response.arrayBuffer();
 
     res.setHeader("Content-Type", "audio/mpeg");
     res.send(Buffer.from(audio));
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-      }
+}
