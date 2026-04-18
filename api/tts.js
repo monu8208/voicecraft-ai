@@ -1,31 +1,27 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).send("Method not allowed");
-  }
+  const { text, voiceId } = req.body;
 
-  try {
-    const { text } = req.body;
+  const response = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "xi-api-key": process.env.ELEVENLABS_API_KEY
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: "eleven_multilingual_v2",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75
+        }
+      })
+    }
+  );
 
-    const response = await fetch(
-      "https://api.elevenlabs.io/v1/text-to-speech/FmBhnvP58BK0vz65OOj7",
-      {
-        method: "POST",
-        headers: {
-          "xi-api-key": process.env.API_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          text: text,
-          model_id: "eleven_multilingual_v2"
-        })
-      }
-    );
+  const audio = await response.arrayBuffer();
 
-    const audio = await response.arrayBuffer();
-
-    res.setHeader("Content-Type", "audio/mpeg");
-    res.send(Buffer.from(audio));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.setHeader("Content-Type", "audio/mpeg");
+  res.send(Buffer.from(audio));
 }
