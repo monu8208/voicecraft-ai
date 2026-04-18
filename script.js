@@ -1,8 +1,12 @@
-async function generate() {
+async function generateAudio() {
+  const text = document.getElementById("text").value;
 
-  let text = document.getElementById("text").value;
+  if (!text) {
+    alert("Text likho pehle");
+    return;
+  }
 
-  let res = await fetch("/api/tts", {
+  const response = await fetch("/api/tts", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -10,8 +14,15 @@ async function generate() {
     body: JSON.stringify({ text })
   });
 
-  let blob = await res.blob();
-  let url = URL.createObjectURL(blob);
+  if (!response.ok) {
+    alert("Error aa raha hai");
+    return;
+  }
 
-  document.getElementById("audio").src = url;
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+
+  const audio = document.getElementById("audio");
+  audio.src = url;
+  audio.play();
 }
