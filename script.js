@@ -1,4 +1,4 @@
-async function generateAudio() {
+function generateAudio() {
   const text = document.getElementById("text").value;
 
   if (!text) {
@@ -8,7 +8,6 @@ async function generateAudio() {
 
   const utterance = new SpeechSynthesisUtterance(text);
 
-  // voice settings (optional but better)
   utterance.rate = 1;
   utterance.pitch = 1;
   utterance.lang = "en-US";
